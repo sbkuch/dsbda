@@ -1,0 +1,67 @@
+import numpy as np                   #practicle 2
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sp = pd.read_csv(r"C:\Users\GAURI\OneDrive\Desktop\AcademicPerformanceNEW.csv")
+
+sp.isnull()
+
+sp.isnull().sum()
+
+searies = pd.isnull(sp["math score"])
+sp[searies]
+
+searies1 = pd.isnull(sp["gender"])
+sp[searies1]
+
+sp.notnull()
+
+sp.dropna()
+
+sp.dropna(axis=1)
+
+new_data = sp.dropna(axis = 0, how='any')
+new_data
+
+print(np.where(sp["math score"]>90))
+
+print(sp[sp["math score"]>90])
+
+#filling the missing values
+sp["reading score"].fillna(sp["reading score"].mean(), inplace=True)
+
+sp.isnull()
+
+numeric_cols = sp.select_dtypes(include = np.number).columns
+
+def detect_and_replace_outliers(col):
+    Q1 = sp[col].quantile(0.25)
+    Q3 = sp[col].quantile(0.75)
+    IQR = Q3 - Q1
+    lower = Q1 - 1.5*IQR
+    upper = Q3 + 1.5*IQR
+    outliers = sp[(sp[col]<lower) | sp[col]>upper][col]
+    print(f"Outliers in '{col}':" ,outliers)
+    median = sp[col].median()
+    sp[col] = sp[col].apply(lambda x: median if x < lower or x > upper else x)
+for col in numeric_cols:
+    detect_and_replace_outliers(col)
+
+print(sp)
+
+col = ['math score', 'reading score', 'placement score']
+sp.boxplot(col)
+
+#to check the skewness
+sns.histplot(sp['placement score'], kde=True)
+plt.title("Placement Score - Before Transformation")
+plt.show()
+
+sp['log_placement_score'] = np.log(sp['placement score'] + 1)
+
+sns.histplot(sp['placement score'], kde=True)
+plt.title("Placement Score - After Transformation")
+plt.show()
+
+print(sp[['placement score', 'log_placement_score']])
