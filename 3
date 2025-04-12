@@ -1,0 +1,37 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv(r"C:\Users\GAURI\OneDrive\Desktop\Employee_Salary_Dataset.csv")
+
+df.mean()
+
+df.loc[:,'Age'].mean()
+
+df.mean(axis=1)[0:4]
+
+df.median()
+
+df.mode()
+
+df.min()
+
+df.max()
+
+df.std(numeric_only=True)
+
+df.loc[:,'Age'].std()
+
+df.groupby(['Salary'])['Age'].mean()
+
+df.columns
+
+iris = pd.read_csv(r"C:\Users\GAURI\OneDrive\Desktop\Iris.csv")
+
+import pandas as pd
+iris.columns
+
+irisSet = (iris['Species'] == 'Iris-setosa')
+print('Iris-setosa')
+print(iris[irisSet].describe())
