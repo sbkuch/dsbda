@@ -1,9 +1,18 @@
+# Import necessary libraries
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-df = pd.read_csv(r"C:\Users\GAURI\OneDrive\Desktop\Iris.csv")
+# Load the dataset
+df = pd.read_csv("iris.csv")
+
+# 1. Display basic information about the dataset
+print("First 5 records:\n", df.head())
+print("\nDataset Info:")
+print(df.info())
+
+print("\nSummary Statistics:")
+print(df.describe())
 
 df.head()
 
@@ -13,39 +22,69 @@ df.median()
 
 df.mode()
 
-df.std()
-
-df.min()
-
-df.max()
-
 df.var()
 
-plt.hist(df['SepalLengthCm'])
+
+# 2. Identify feature types
+print("\nFeature types:")
+for col in df.columns:
+    dtype = df[col].dtype
+    if dtype == 'object':
+        print(f"{col}: Nominal")
+    else:
+        print(f"{col}: Numeric")
+
+# 3. Histograms for each numeric feature
+df.hist(figsize=(10, 8), bins=20, color='skyblue', edgecolor='black')
+plt.suptitle("Histograms of Iris Dataset Features")
+plt.tight_layout()
 plt.show()
 
-plt.figure(figsize = (10,7))
-df.boxplot()
-plt.show()
+# 4. Box plots for each numeric feature
+numeric_features = df.select_dtypes(include=['float64', 'int64']).columns
+for feature in numeric_features:
+    plt.figure(figsize=(6, 4))
+    sns.boxplot(x=df[feature], color='lightcoral')
+    plt.title(f"Boxplot of {feature}")
+    plt.show()
 
-fig, axes = plt.subplots(2, 2, figsize=(16,8))
-axes[0,0].set_title("Distribution of Sepal Length")
-axes[0,0].hist(df["SepalLengthCm"]);
-axes[0,1].set_title("Distribution of Sepal Width")
-axes[0,1].hist(df["SepalWidthCm"]);
-axes[1,0].set_title("Distribution of Petal Length")
-axes[1,0].hist(df["PetalLengthCm"]);
-axes[1,1].set_title("Distribution of Petal Width")
-axes[1,1].hist(df["PetalWidthCm"]);
-plt.show()
 
-fig, axes = plt.subplots(2, 2, figsize=(16,9))
-axes[0,0].set_title("Distribution of Sepal Length")
-sns.boxplot(y="SepalLengthCm", x="Species", data=df, orient='v', ax=axes[0,0])
-axes[0,1].set_title("Distribution of Sepal Length")
-sns.boxplot(y="SepalWidthCm", x="Species", data=df, orient='v', ax=axes[0,1])
-axes[1,0].set_title("Distribution of Sepal Length")
-sns.boxplot(y="PetalLengthCm", x="Species", data=df, orient='v', ax=axes[1,0])
-axes[1,1].set_title("Distribution of Sepal Length")
-sns.boxplot(y="PetalWidthCm", x="Species", data=df, orient='v', ax=axes[1,1])
-plt.show()
+✅ Output Analysis and Inferences
+1. Features and Their Types:
+Typical columns in iris.csv are:
+
+sepal.length: Numeric
+
+sepal.width: Numeric
+
+petal.length: Numeric
+
+petal.width: Numeric
+
+species: Nominal (categorical)
+
+2. Histograms
+Histograms show the frequency distribution of each numeric feature. You may observe:
+
+petal.length and petal.width are skewed with species-based groupings.
+
+sepal.length is normally distributed.
+
+sepal.width is a bit more spread out.
+
+3. Box Plots
+Box plots reveal:
+
+sepal.width and petal.width may contain outliers.
+
+petal.length shows distinct groupings which might correspond to species.
+
+4. Compare Distributions and Identify Outliers
+Outliers can be seen as dots outside the whiskers in boxplots.
+
+Features like sepal.width have visible outliers.
+
+petal.length and petal.width show clustering and clear separation between classes (good for classification).
+
+
+
