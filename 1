@@ -1,42 +1,37 @@
-import numpy as np
+# Importing necessary libraries
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import numpy as np
 
-weather = pd.read_csv(r"C:\Users\GAURI\OneDrive\Desktop\weatherAUS.csv")
+# Load dataset
+df = pd.read_csv('https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv')
 
-weather.head()
+# Display the first few rows
+print(df.head())
 
-weather.tail()
+# Check for missing values
+print(df.isnull().sum())
 
-weather.index
+# Get summary statistics
+print(df.describe())
 
-weather.columns
+# Dimensions of the dataframe
+print(df.shape)
 
-weather.shape
+# Check data types
+print(df.dtypes)
 
-weather.dtypes
+#Type Conversion
+df['species'] = df['species'].astype('category')
+print(df.dtypes)
 
-weather.columns.values
+# Import LabelEncoder
+from sklearn.preprocessing import LabelEncoder
 
-weather['Location']
+# Create an encoder object
+le = LabelEncoder()
 
-weather.sort_index(axis=1, ascending=True)
+# Encode species column
+df['species_encoded'] = le.fit_transform(df['species'])
 
-weather.sort_values(by="Location")
-
-weather.iloc[105809]
-
-weather.loc[105809,["Date"]]
-
-weather.loc[:,["Date","Location"]]
-
-weather.iloc[:6, :]
-
-weather.isnull()
-
-weather.isnull().any()
-
-weather.isnull().sum()
-
-weather.isnull().sum(axis=1)
+# Display updated dataframe
+print(df.head())
