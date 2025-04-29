@@ -1,54 +1,27 @@
 import pandas as pd
-import numpy as np
-%matplotlib inline
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
 
-from seaborn import load_dataset
-data = pd.read_csv(r"C:\Users\GAURI\OneDrive\Desktop\titanic_train.csv")
+# Load the Titanic dataset
+df = pd.read_csv("C:/Users/aasth/OneDrive/Desktop/DSBDA/titanic_train.csv")
 
-tips = load_dataset("tips")
+df.info()
 
-sns.countplot(data['Survived'])
-plt.show()
+# Display basic info (optional but useful for checking)
+print(df[['Sex', 'Age', 'Survived']].info())
 
-data['Sex'].value_counts().plot(kind="pie", autopct="%.2f")
-plt.show()
+# Drop rows with missing age values
+df = df.dropna(subset=['Age'])
 
-data = data.dropna()
+# Set the plot style
+sns.set(style="whitegrid")
 
-plt.hist(data['Age'],bins=5)
-plt.show()
+# Create the box plot
+plt.figure(figsize=(10, 6))
+sns.boxplot(x='Sex', y='Age', hue='Survived', data=df)
 
-sns.distplot(data['Age'])
-plt.show()
-
-sns.scatterplot(x=tips["total_bill"], y=tips["tip"])
-
-sns.scatterplot(x=tips["total_bill"], y=tips["tip"], hue=tips["sex"])
-plt.show()
-
-sns.scatterplot(x=tips["total_bill"], y=tips["tip"], hue=tips["sex"], style=tips['smoker'])
-plt.show()
-
-sns.barplot(x=data['Pclass'], y=data['Age'])
-plt.show()
-
-sns.barplot(x=data['Pclass'], y=data['Fare'], hue = data["Sex"])
-plt.show()
-
-sns.boxplot(x=data['Sex'], y=data["Age"])
-
-sns.boxplot(x=data['Sex'], y=data['Age'], hue=data['Survived'])
-plt.show()
-
-sns.distplot(data[data['Survived'] == 0]['Age'], hist=False, color="blue")
-sns.distplot(data[data['Survived'] == 1]['Age'], hist=False, color="orange")
-plt.show()
-
-pd.crosstab(data['Pclass'], data['Survived'])
-
-sns.heatmap(pd.crosstab(data['Pclass'], data['Survived']))
-
-sns.clustermap(pd.crosstab(data['Parch'], data['Survived']))
+# Add plot title and labels
+plt.title('Distribution of Age by Gender and Survival Status')
+plt.xlabel('Gender')
+plt.ylabel('Age')
 plt.show()
