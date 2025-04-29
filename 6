@@ -1,63 +1,35 @@
-import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
-from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, classification_report
 
-import pandas as pd
+# Load dataset
+df = pd.read_csv("C:/Users/aasth/OneDrive/Desktop/DSBDA/Iris.csv")
 
-# Corrected URL (raw content link)
-data = pd.read_csv("https://raw.githubusercontent.com/venky14/Machine-Learning-with-Iris-Dataset/master/Iris.csv")
+# View first few rows
+print(df.head())
 
-data
+X = df.drop("Species", axis=1)   # Features
+y = df["Species"]                # Target label
 
-data.head(5)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-data.tail()
+model = GaussianNB()
+model.fit(X_train, y_train)
 
- data.describe(include='all')
+y_pred = model.predict(X_test)
 
-data.info()
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:\n", cm)
 
-print(data.shape) ; data['Species'].unique()
+# Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
 
-data.isnull().sum()  
+#Error Rate
+error_rate = 1 - accuracy 
+print("Error Rate: ",error_rate)
 
-x = data.iloc[:,1:5]
-y = data.iloc[:,5:]
-
-encode = LabelEncoder() ;y = encode.fit_transform(y)
-
-x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.3,random_state=0)
-
-naive_bayes = GaussianNB()
-naive_bayes.fit(x_train,y_train)
-pred = naive_bayes.predict(x_test)
-
-pred
-
-y_test
-
-matrix = confusion_matrix(y_test,pred,labels = naive_bayes.classes_)
-print(matrix)
-tp, fn, fp, tn = confusion_matrix(y_test,pred,labels=[1,0]).reshape(-1)
-
-# Get unique class labels from the dataset
-labels = data['Species'].unique()
-# Create and display the confusion matrix
-conf_matrix = ConfusionMatrixDisplay(confusion_matrix=matrix, display_labels=labels)
-conf_matrix.plot(cmap=plt.cm.YlGn)
-plt.show() 
-
-print(classification_report(y_test,pred))
-
-from sklearn.metrics import accuracy_score
-print('\nAccuracy: {:.2f}'.format(accuracy_score(y_test,pred)))
-print('Error Rate: ',(fp+fn)/(tp+tn+fn+fp))
-print('Sensitivity (Recall or True Positive Rate):', tp / (tp + fn))  
-print('Specificity (True Negative Rate):', tn / (fp + tn))
-print('Precision (Positive predictive value) :',tp/(tp+fp))
-print('False Positive Rate :',fp/(tn+fp))
+# Classification report (includes precision, recall, f1-score)
+print("Classification Report:\n", classification_report(y_test, y_pred))
