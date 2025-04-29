@@ -1,37 +1,28 @@
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-df = pd.read_csv(r"C:\Users\GAURI\OneDrive\Desktop\Employee_Salary_Dataset.csv")
+# Step 1: Load the dataset
+df = pd.read_csv("C:/Users/aasth/OneDrive/Desktop/DSBDA/Employee_Salary_Dataset.csv")
 
-df.mean()
+# Group salary statistics by Gender
+grouped_stats = df.groupby('Gender')['Salary'].agg(['mean', 'median', 'min', 'max', 'std'])
 
-df.loc[:,'Age'].mean()
+# Display summary statistics
+print("📊 Salary Statistics Grouped by Gender:")
+print(grouped_stats)
 
-df.mean(axis=1)[0:4]
+# Create a list of salaries for each gender
+salary_list = df.groupby('Gender')['Salary'].apply(list)
+print("\n📋 Salary values per gender:")
+print(salary_list)
 
-df.median()
+# Load dataset
+iris = pd.read_csv("C:/Users/aasth/OneDrive/Desktop/DSBDA/Iris.csv")
 
-df.mode()
+# View column names
+print("Columns in the dataset:", iris.columns)
 
-df.min()
-
-df.max()
-
-df.std(numeric_only=True)
-
-df.loc[:,'Age'].std()
-
-df.groupby(['Salary'])['Age'].mean()
-
-df.columns
-
-iris = pd.read_csv(r"C:\Users\GAURI\OneDrive\Desktop\Iris.csv")
-
-import pandas as pd
-iris.columns
-
-irisSet = (iris['Species'] == 'Iris-setosa')
-print('Iris-setosa')
-print(iris[irisSet].describe())
+# Group and summarize by actual species column
+for species in iris['Species'].unique():
+    print(f"\n📈 Statistics for {species}:")
+    species_data = iris[iris['Species'] == species]
+    print(species_data.describe())
