@@ -1,79 +1,27 @@
-import pandas as pd
-import numpy as np
-%matplotlib inline
-import matplotlib.pyplot as plt
-import seaborn as sns
+# Step 1: Import required libraries
+import pandas as pd       # For loading and handling data
+import seaborn as sns     # For data visualization
+import matplotlib.pyplot as plt  # For displaying plots
 
-import pandas as pd
-dataset = pd.read_csv(r"C:\Users\GAURI\OneDrive\Desktop\Titanic1.csv")
+# Step 2: Load the Titanic dataset
+df = pd.read_csv('titanic.csv')  # Make sure the file is in your working directory
 
-dataset.head()
+# Step 3: Display the first 5 rows of the dataset
+print("🔹 First 5 records of Titanic dataset:")
+print(df.head())
 
-plt.show()
-sns.histplot(dataset['fare'])
+# Step 4: Check for missing values in 'fare' column
+print("\n🔹 Missing values in 'fare' column:")
+print(df['fare'].isnull().sum())
 
-sns.histplot(dataset['fare'], kde=False, bins=10)
-plt.show()
+print("\n🔹 Fare Summary Statistics:")
+print(df['fare'].describe())
 
-sns.jointplot(x='age', y='fare', data=dataset)
-plt.show()
-
-sns.jointplot(x='age', y='fare', data=dataset, kind='hex')
-plt.show()
-
-dataset=dataset.dropna()
-
-sns.pairplot(dataset)
-
-sns.pairplot(dataset, hue='sex')
-
-sns.rugplot(dataset['fare'])
-
-sns.barplot(x='sex', y='age', data=dataset)
-plt.show()
-
-sns.barplot(x='sex', y='age', data=dataset, estimator=np.std)
-plt.show()
-
-sns.countplot(x='sex', data=dataset)
-plt.show()
-
-sns.boxplot(x='sex', y='age', data=dataset)
-plt.show()
-
-sns.boxplot(x='sex', y='age', data=dataset, hue="survived")
-plt.show()
-
-sns.violinplot(x='sex', y='age', data=dataset)
-plt.show()
-
-sns.violinplot(x='sex', y='age', data=dataset, hue='survived')
-plt.show()
-
-sns.violinplot(x='sex', y='age', data=dataset, hue='survived', split=True)
-plt.show()
-
-sns.stripplot(x='sex', y='age', data=dataset)
-plt.show()
-
-sns.stripplot(x='sex', y='age', data=dataset, jitter=True)
-plt.show()
-
-sns.stripplot(x='sex', y='age', data=dataset, jitter=True, hue='survived')
-plt.show()
-
-sns.stripplot(x='sex',y='age',data=dataset,jitter=True,hue='survived')
-plt.show()
-
-sns.swarmplot(x='sex', y='age', data=dataset)
-plt.show()
-
-sns.swarmplot(x='sex', y='age', data=dataset, hue='survived')
-plt.show()
-
-sns.swarmplot(x='sex', y='age', data=dataset, hue='survived')
-plt.show()
-
-sns.violinplot(x='sex', y='age', data=dataset)
-sns.swarmplot(x='sex', y='age', data=dataset, color='black')
+# Step 5: Plot a histogram for the 'fare' column
+plt.figure(figsize=(10, 6))  # Optional: Adjust the figure size
+sns.histplot(df['fare'], kde=True, bins=30, color='skyblue')  # KDE adds smooth curve
+plt.title('Distribution of Fare Prices on Titanic')
+plt.xlabel('Fare')
+plt.ylabel('Number of Passengers')
+plt.grid(True)
 plt.show()
