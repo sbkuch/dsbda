@@ -3,10 +3,13 @@ import pandas as pd
 import numpy as np
 
 # Load dataset
-df = pd.read_csv('https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv')
+df = pd.read_csv("C:/Users/aasth/OneDrive/Desktop/DSBDA/weatherAUS.csv")
 
 # Display the first few rows
 print(df.head())
+
+# Display the last few rows
+print(df.tail())
 
 # Check for missing values
 print(df.isnull().sum())
@@ -21,7 +24,7 @@ print(df.shape)
 print(df.dtypes)
 
 #Type Conversion
-df['species'] = df['species'].astype('category')
+df['RainTomorrow'] = df['RainTomorrow'].astype('category')
 print(df.dtypes)
 
 # Import LabelEncoder
@@ -30,8 +33,8 @@ from sklearn.preprocessing import LabelEncoder
 # Create an encoder object
 le = LabelEncoder()
 
-# Encode species column
-df['species_encoded'] = le.fit_transform(df['species'])
+# Encode Location column
+df['Location_encoded'] = le.fit_transform(df['Location'])
 
 # Display updated dataframe
 print(df.head())
