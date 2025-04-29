@@ -1,67 +1,54 @@
-import numpy as np                   #practicle 2
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import numpy as np
 
-sp = pd.read_csv(r"C:\Users\GAURI\OneDrive\Desktop\AcademicPerformanceNEW.csv")
+data = {
+    'student_id': [1, 2, 3, 4, 5, 6, 7],
+    'name': ['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Frank', 'Grace'],
+    'age': [15, 16, np.nan, 15, 17, 16, 15],
+    'gender': ['F', 'M', 'M', 'M', 'F', 'M', None],
+    'math_score': [88, 92, 40, 95, 200, 85, 87],  # 200 is an outlier
+    'english_score': [85, 89, 75, 91, 77, np.nan, 84],
+    'science_score': [78, 94, 70, 89, 76, 90, 95],
+    'attendance_percentage': [92, 88, 60, 100, 95, 87, 30]  # 30 is low
+}
 
-sp.isnull()
+df = pd.DataFrame(data)
+print(df)
 
-sp.isnull().sum()
+# Checking for missing values
+print(df.isnull().sum())
 
-searies = pd.isnull(sp["math score"])
-sp[searies]
+df['age'] = df['age'].fillna(df['age'].mean())
+df['gender'] = df['gender'].fillna(df['gender'].mode()[0])
+df['english_score'] = df['english_score'].fillna(df['english_score'].median())
 
-searies1 = pd.isnull(sp["gender"])
-sp[searies1]
-
-sp.notnull()
-
-sp.dropna()
-
-sp.dropna(axis=1)
-
-new_data = sp.dropna(axis = 0, how='any')
-new_data
-
-print(np.where(sp["math score"]>90))
-
-print(sp[sp["math score"]>90])
-
-#filling the missing values
-sp["reading score"].fillna(sp["reading score"].mean(), inplace=True)
-
-sp.isnull()
-
-numeric_cols = sp.select_dtypes(include = np.number).columns
-
-def detect_and_replace_outliers(col):
-    Q1 = sp[col].quantile(0.25)
-    Q3 = sp[col].quantile(0.75)
+def detect_outliers_iqr(data, col):
+    Q1 = data[col].quantile(0.25)
+    Q3 = data[col].quantile(0.75)
     IQR = Q3 - Q1
-    lower = Q1 - 1.5*IQR
-    upper = Q3 + 1.5*IQR
-    outliers = sp[(sp[col]<lower) | sp[col]>upper][col]
-    print(f"Outliers in '{col}':" ,outliers)
-    median = sp[col].median()
-    sp[col] = sp[col].apply(lambda x: median if x < lower or x > upper else x)
-for col in numeric_cols:
-    detect_and_replace_outliers(col)
+    lower = Q1 - 1.5 * IQR
+    upper = Q3 + 1.5 * IQR
+    return data[(data[col] < lower) | (data[col] > upper)]
 
-print(sp)
+outliers_math = detect_outliers_iqr(df, 'math_score')
+print(outliers_math)
 
-col = ['math score', 'reading score', 'placement score']
-sp.boxplot(col)
+upper_cap = int(df['math_score'].quantile(0.95))
+df.loc[df['math_score'] > upper_cap, 'math_score'] = upper_cap
 
-#to check the skewness
-sns.histplot(sp['placement score'], kde=True)
-plt.title("Placement Score - Before Transformation")
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Before transformation
+sns.histplot(df['attendance_percentage'], kde=True)
+plt.title("Before Transformation")
 plt.show()
 
-sp['log_placement_score'] = np.log(sp['placement score'] + 1)
+# Apply log transformation
+df['log_attendance'] = np.log1p(df['attendance_percentage'])
 
-sns.histplot(sp['placement score'], kde=True)
-plt.title("Placement Score - After Transformation")
+# After transformation
+sns.histplot(df['log_attendance'], kde=True)
+plt.title("After Log Transformation")
 plt.show()
 
-print(sp[['placement score', 'log_placement_score']])
