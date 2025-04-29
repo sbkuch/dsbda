@@ -1,100 +1,77 @@
-import pandas as pd
+# Import necessary libraries
 import nltk
-import re
-from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
-from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk import pos_tag
+from sklearn.feature_extraction.text import TfidfVectorizer
 
+# Download required NLTK resources
 nltk.download('punkt')
 nltk.download('stopwords')
-nltk.download('wordnet')
 nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
+nltk.download('omw-1.4')
 
-text = "  Gauri Rajesh Mukkawar "
+# Sample document
+text = "Natural Language Processing with Python is very interesting and fun to learn!"
 
-tokenized_text=sent_tokenize(text)
-print(tokenized_text)
-tokenized_word=word_tokenize(text)
-print(tokenized_word)
+# 1. Tokenization
+tokens = word_tokenize(text)
+print("🔹 Tokens:", tokens)
 
-stop_words=set(stopwords.words("english"))
-print(stop_words)
-text="How to remove stop words with NLTK library in Python?"
-text=re.sub('[^a-zA-Z]',' ',text)
-tokens=word_tokenize(text.lower())
-filtered_text=[]
-for w in tokens:
-    if w not in stop_words: filtered_text.append(w)
-print("Tokenized Sentence:",tokens)
-print("Filtered Sentence",filtered_text)
+# 2. POS Tagging (Part of Speech)
+pos_tags = pos_tag(tokens)
+print("🔹 POS Tags:", pos_tags)
 
-e_words=["wait","waiting","waited","waits"]
-ps=PorterStemmer()
-for w in e_words: rootWord=ps.stem(w)
-print(rootWord)
+# 3. Stopwords Removal
+stop_words = set(stopwords.words('english'))
+filtered_tokens = [word for word in tokens if word.lower() not in stop_words]
+print("🔹 Tokens after Stopword Removal:", filtered_tokens)
 
-wordnet_lemmatizer=WordNetLemmatizer()
-text="studies studying cries cry"
-tokenization=nltk.word_tokenize(text)
-for w in tokenization:
-    print("Lemma for {} is {}".format(w,wordnet_lemmatizer.lemmatize))
+# 4. Stemming
+stemmer = PorterStemmer()
+stemmed_words = [stemmer.stem(word) for word in filtered_tokens]
+print("🔹 Stemmed Words:", stemmed_words)
 
-data="The pink sweater fit her perfectly"
-words=word_tokenize(data)
-for word in words:
-    print(nltk.pos_tag([word]))
+# 5. Lemmatization
+lemmatizer = WordNetLemmatizer()
+lemmatized_words = [lemmatizer.lemmatize(word) for word in filtered_tokens]
+print("🔹 Lemmatized Words:", lemmatized_words)
 
-import pandas as pd
+# Second document to show TF-IDF effectively
+doc2 = "Python and NLTK are useful tools for text processing."
+
+# 6. TF-IDF (Term Frequency - Inverse Document Frequency)
+documents = [text, doc2]
+tfidf_vectorizer = TfidfVectorizer()
+tfidf_matrix = tfidf_vectorizer.fit_transform(documents)
+
+# Displaying TF-IDF values
+print("\n🔹 TF-IDF Matrix (terms × documents):")
+print(tfidf_matrix.toarray())
+print("\n🔹 Feature Names:")
+print(tfidf_vectorizer.get_feature_names_out())
+
+
 from sklearn.feature_extraction.text import TfidfVectorizer
-import math
 
-documentA = "Jupiter is the largest Planet"
-documentB = "Mars is the fourth planet from the Sun"
-# Tokenizing documents into words
-bagOfWordsA = documentA.split(' ')
-bagOfWordsB = documentB.split(' ')
-# Fix: Define `uniqueWords` correctly
-uniqueWords = set(bagOfWordsA).union(set(bagOfWordsB))
-# Initialize word count dictionaries
-numOfWordsA = dict.fromkeys(uniqueWords, 0)
-numOfWordsB = dict.fromkeys(uniqueWords, 0)
-# Count word occurrences
-for word in bagOfWordsA:
-    numOfWordsA[word] += 1
-for word in bagOfWordsB:
-    numOfWordsB[word] += 1
+# Sample corpus of documents
+corpus = [
+    "Python is a great language for data science.",
+    "Natural language processing with Python is powerful.",
+    "Text analytics is a part of data science."
+]
 
-def computeTF(wordDict, bagOfWords):
-    tfDict = {}
-    bagOfWordsCount = len(bagOfWords)
-    for word, count in wordDict.items():
-        tfDict[word] = count / float(bagOfWordsCount)
-    return tfDict
-tfA=computeTF(numOfWordsA, numOfWordsA)
-tfB=computeTF(numOfWordsB, numOfWordsB)
+# Create TF-IDF Vectorizer
+vectorizer = TfidfVectorizer()
 
-def computeIDF(documents):
-    N=len(documents)
-    idfDict=dict.fromkeys(documents[0].keys(),0)
-    for documents in documents:
-        for word, val in documents.items():
-            if val>0:
-                idfDict[word]+=1
-    for word,val in idfDict.items():
-        idfDict[word]=math.log(N/float(val))
-    return idfDict
-idfs=computeIDF([numOfWordsA,numOfWordsB])
-idfs
+# Fit and transform the corpus
+X = vectorizer.fit_transform(corpus)
 
-def computeTFIDF(tfBagOfWords,idfs):
-    tfidf={}
-    for word, val in tfBagOfWords.items():
-        tfidf[word]=val*idfs[word]
-    return tfidf
-tfidfA=computeTFIDF(tfA,idfs)
-tfidfB=computeTFIDF(tfB,idfs)
-df=pd.DataFrame([tfidfA,tfidfB])
-df
+# Convert to dense matrix and display
+tfidf_matrix = X.toarray()
+print("TF-IDF Matrix:\n", tfidf_matrix)
+
+# Display feature names (terms)
+print("Vocabulary (terms):", vectorizer.get_feature_names_out())
