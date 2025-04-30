@@ -1,76 +1,42 @@
-# Import necessary libraries
+#Practical 7
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from nltk import pos_tag
 from sklearn.feature_extraction.text import TfidfVectorizer
+import string
 
-# Download required NLTK resources
 nltk.download('punkt')
 nltk.download('stopwords')
-nltk.download('averaged_perceptron_tagger')
 nltk.download('wordnet')
-nltk.download('omw-1.4')
+nltk.download('averaged_perceptron_tagger')
 
-# Sample document
-text = "Natural Language Processing with Python is very interesting and fun to learn!"
+sample_doc = "This is a practical of dsbda"
 
-# 1. Tokenization
-tokens = word_tokenize(text)
-print("🔹 Tokens:", tokens)
+tokens = word_tokenize(sample_doc)
+print("Tokens:",tokens)
 
-# 2. POS Tagging (Part of Speech)
 pos_tags = pos_tag(tokens)
-print("🔹 POS Tags:", pos_tags)
+print("POS Tags:",pos_tags)
 
-# 3. Stopwords Removal
 stop_words = set(stopwords.words('english'))
-filtered_tokens = [word for word in tokens if word.lower() not in stop_words]
-print("🔹 Tokens after Stopword Removal:", filtered_tokens)
+filtered_tokens = [word for word in tokens if word.lower() not in stop_words and word not in string.punctuation]
+print("After Stop Word Removal:",filtered_tokens)
 
-# 4. Stemming
 stemmer = PorterStemmer()
-stemmed_words = [stemmer.stem(word) for word in filtered_tokens]
-print("🔹 Stemmed Words:", stemmed_words)
+stemmed = [stemmer.stem(word) for word in filtered_tokens]
+print("Stemmed Words : ",stemmed)
 
-# 5. Lemmatization
 lemmatizer = WordNetLemmatizer()
-lemmatized_words = [lemmatizer.lemmatize(word) for word in filtered_tokens]
-print("🔹 Lemmatized Words:", lemmatized_words)
+lemmatized = [lemmatizer.lemmatize(word) for word in filtered_tokens]
+print("Lemmatized Words:",lemmatized)
 
-# Second document to show TF-IDF effectively
-doc2 = "Python and NLTK are useful tools for text processing."
+import pandas as pd
+documents = ["This the practical of dsbda"]
 
-# 6. TF-IDF (Term Frequency - Inverse Document Frequency)
-documents = [text, doc2]
 tfidf_vectorizer = TfidfVectorizer()
 tfidf_matrix = tfidf_vectorizer.fit_transform(documents)
 
-# Displaying TF-IDF values
-print("\n🔹 TF-IDF Matrix (terms × documents):")
-print(tfidf_matrix.toarray())
-print("\n🔹 Feature Names:")
-print(tfidf_vectorizer.get_feature_names_out())
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-
-# Sample corpus of documents
-corpus = [
-    "Python is a great language for data science.",
-    "Natural language processing with Python is powerful.",
-    "Text analytics is a part of data science."
-]
-
-# Create TF-IDF Vectorizer
-vectorizer = TfidfVectorizer()
-
-# Fit and transform the corpus
-X = vectorizer.fit_transform(corpus)
-
-# Convert to dense matrix and display
-tfidf_matrix = X.toarray()
-print("TF-IDF Matrix:\n", tfidf_matrix)
-
-# Display feature names (terms)
-print("Vocabulary (terms):", vectorizer.get_feature_names_out())
+df_tfidf = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf_vectorizer.get_feature_names_out())
+print("TF-IDF Representation:\n",df_tfidf)
