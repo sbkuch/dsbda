@@ -33,3 +33,11 @@ print("Error Rate: ",error_rate)
 
 # Classification report (includes precision, recall, f1-score)
 print("Classification Report:\n", classification_report(y_test, y_pred))
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()
